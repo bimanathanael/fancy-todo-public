@@ -1,5 +1,6 @@
-const { Todo } = require('../models')
-const doMail = require('./mailAPI')
+require("dotenv").config();
+const { Todo, User } = require('../models')
+const doMail = require('../helper/mail')
 
 class TodosController{
     static view (req, res, next){
@@ -19,13 +20,20 @@ class TodosController{
 
 
     static add (req, res, next){
-        console.log(req.dataUser)
         let newOne = {
             title: req.body.title,
             description: req.body.description,
             status: req.body.status,
             due_date: req.body.due_date,
-            UserId: +req.body.UserId
+            UserId: +req.userData.id
+        }
+
+        if(newOne.title == "" || newOne.description == "" || newOne.status == "" || newOne.due_date == ""){
+            throw {
+                name: "customErr",
+                message: "Please Fill All Fields",
+                status : 404,
+            }
         }
 
         Todo.create(newOne)
@@ -74,9 +82,22 @@ class TodosController{
                     description: req.body.description,
                     status: req.body.status,
                     due_date: req.body.due_date,
-                    // UserId: req.dataUser.id
-                    UserId: 10
+                    UserId: req.userData.id
+                    // UserId: 10
                 }
+                if(updatedOne.title == "" || updatedOne.description == "" || updatedOne.status == "" || updatedOne.due_date == ""){
+                    throw {
+                        name: "customErr",
+                        message: "Please Fill All Fields",
+                        status : 404,
+                    }
+                }
+
+                data.update(updatedOne, {
+                    where : {
+                        id : updatedId
+                    }
+                })
 
                 .then(data => {
                     return res.status(200).json(data)
@@ -121,6 +142,7 @@ class TodosController{
             next(errMsg)
         })
     }
+
 }
 
 

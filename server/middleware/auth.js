@@ -11,7 +11,7 @@ const authentication = (req, res, next) => {
                 req.userData = userData
                 next()
             } 
-            catch{
+            catch{ 
                 const errMsg= {
                     name: "customErr",
                     message: "Wrong Access Key",

@@ -23,8 +23,8 @@ module.exports = (err, req, res, next) => {
             break;
 
         case "Internal Server Error" :
-            errMsg = err.message
-            errStatus = 400
+            errMsg = err.name
+            errStatus = 500
             break;
     }
     res.status(errStatus).json({message: errMsg})
