@@ -95,6 +95,7 @@ _Response (404 - Not Found)_
 
 ### POST /todos
 > Create new todos
+On this method, also hit mailGun API to perform send email after new Todo created.
 
 _Request Header_
 ```

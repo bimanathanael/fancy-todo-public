@@ -34,6 +34,8 @@ function beforeLogin(){
     $('#editTodo').hide()
     $('#successRegister').hide()
     $('#errorRegister').hide()
+    $('#errorAddTodoUpdate').hide()
+    $('#errorDelete').hide()
 }
 
 function fetchDataTodos() {
@@ -239,6 +241,10 @@ function doAddToDo(event){
     })
     .done( data => {
         console.log("success add ", data)
+        $('title').val('')
+        $('description').val('')
+        $('status').val('')
+        $('due_date').val('')
         afterLogin()
     })
     .fail ( err => {
