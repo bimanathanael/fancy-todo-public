@@ -38,6 +38,12 @@ class MainController {
                 return res.status(200).json(({
                     access_token : token
                 }))
+            } else {
+                throw { 
+                    name: "customErr",
+                    message: "Login data not found",
+                    status : 404,
+                }
             }
         })
         .catch( err => {

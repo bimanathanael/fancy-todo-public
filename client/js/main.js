@@ -1,6 +1,7 @@
 $(document).ready(function() {
     if (!localStorage.getItem('token')) {
         beforeLogin()
+        $('#myModal').modal(options)
     } else {
         afterLogin()
     }
@@ -126,8 +127,8 @@ function showRegister () {
 }
 
 function doEdit(id, event){
-    $('#addTodo').hide()
     event.preventDefault()
+    $('#addTodo').hide()
     $('#editTodo').show()
 
     $.ajax({
