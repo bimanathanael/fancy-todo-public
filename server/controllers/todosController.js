@@ -4,7 +4,8 @@ const doMail = require('../helper/mail')
 
 class TodosController{
     static view (req, res, next){
-        Todo.findAll()
+        console.log(req.params.projectId,"req.params.projectId")
+        Todo.findAll({where: {ProjectId : req.params.projectId}})
         .then(data => {
             return res.status(200).json(data)
         })
@@ -25,8 +26,11 @@ class TodosController{
             description: req.body.description,
             status: req.body.status,
             due_date: req.body.due_date,
-            UserId: +req.userData.id
+            UserId: +req.userData.id,
+            ProjectId: +req.params.projectId
         }
+
+        console.log(newOne, "MASUK")
 
         if(newOne.title == "" || newOne.description == "" || newOne.status == "" || newOne.due_date == ""){
             throw {
@@ -82,7 +86,8 @@ class TodosController{
                     description: req.body.description,
                     status: req.body.status,
                     due_date: req.body.due_date,
-                    UserId: req.userData.id
+                    UserId: req.userData.id,
+                    ProjectId : req.params.projectId
                     // UserId: 10
                 }
                 if(updatedOne.title == "" || updatedOne.description == "" || updatedOne.status == "" || updatedOne.due_date == ""){

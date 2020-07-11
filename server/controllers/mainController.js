@@ -114,6 +114,22 @@ class MainController {
         })
     }
 
+    static viewAllUsers (req,res,next){
+        User.findAll()
+        .then(data => {
+            console.log(data)
+            return res.status(200).json(data)
+        })
+        .catch(err=>{
+            const errMsg = {
+                name: "customValidation",
+                message: "Server Internal Error",
+                status : 500,
+            }
+            next(errMsg)
+        })
+    }
+
 }
 
 module.exports = MainController

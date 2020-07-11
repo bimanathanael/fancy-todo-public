@@ -3,13 +3,13 @@ const todosController = require('../controllers/todosController')
 const { authorization } = require('../middleware/auth')
 
 
-router.get('/', todosController.view)
-router.get('/:id' , todosController.viewRequestedId)
+router.get('/:projectId/', authorization, todosController.view)
+router.get('/:projectId/:id' , authorization , todosController.viewRequestedId)
 
-router.post('/', todosController.add)
-router.put('/:id', authorization , todosController.update)
+router.post('/:projectId/',authorization, todosController.add)
+router.put('/:projectId/:id', authorization , todosController.update)
 
-router.delete('/:id',authorization, todosController.delete)
+router.delete('/:projectId/:id',authorization, todosController.delete)
 
 
 

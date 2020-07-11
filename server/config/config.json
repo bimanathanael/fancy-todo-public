@@ -2,7 +2,7 @@
   "development": {
     "username": "admin",
     "password": "admin",
-    "database": "todoApp",
+    "database": "todoAppRocket",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

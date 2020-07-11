@@ -9,6 +9,8 @@ $(document).ready(function() {
 
 function afterLogin(){
     $('#cardTodos').show()
+    $('#addProject').show()
+    
     $('#logout').show()
     $('#loginForm').hide()
     $('#registerCard').hide()
@@ -18,9 +20,12 @@ function afterLogin(){
     $('#errorAddTodo').hide()
     $('#errorAddTodoUpdate').hide()
     $('#errorDelete').hide()
-    
+    $('#activeProject').show()
+    $('#showDetailsProject').hide()
+    $('#errorAddProject').hide()
+    $('#addProjectForm').hide()
 
-    fetchDataTodos()
+    fetchDataProject()
 }
 
 function beforeLogin(){
@@ -30,40 +35,193 @@ function beforeLogin(){
     $('#registerCard').hide()
     $('#addTodo').hide()
     $('#addToDoBtn').hide()
+    $('#addProject').hide()
+    $('#addProjectForm').hide()
     $('#errorLogin').hide()
     $('#editTodo').hide()
     $('#successRegister').hide()
     $('#errorRegister').hide()
+    $('#errorAddTodoUpdate').hide()
+    $('#errorDelete').hide()
+    $('#activeProject').hide()
+    $('#showDetailsProject').hide()
+
+
 }
 
-function fetchDataTodos() {
+function fetchDataTodos(projectId) {
+    console.log(projectId,"projectIdprojectIdprojectId")
     $('#cardTodos').empty()
     $.ajax({
         method: "GET",
-        url : "http://localhost:3333/todos/",
+        url : `http://localhost:3333/todos/${projectId}`,
         headers : {
             access_token: localStorage.token
         }
     })
     .done( todos => {
         todos.forEach(todo => { 
+            console.log(todo, "todotodo" )
             let due_date = new Date(todo.due_date)
             let getDate = `${due_date.getFullYear()}-0${due_date.getMonth()+1}-0${due_date.getDate()}`
             $('#cardTodos').append(`
             <div class="card" style="width: 18rem;margin: 1%" >
                 <div class="card-body">
-                    <h5 class="card-title">${todo.title}</h5>
+                    <h5 class="card-title text-info">${todo.title} </h5>
                     <h6 class="card-subtitle mb-2 text-muted">${todo.description}</h6>
                     <p class="card-text">Status : ${todo.status} </p>
                     <h6 class="card-subtitle mb-2 text-muted"> Due Date ${getDate}</h6>
-                    <a onclick="doEdit(${todo.id}, event)" class="btn btn-primary">Edit</a>
-                    <a onclick="doDelete(${todo.id}, event)" class="btn btn-danger">Delete</a>
+                    <button onclick="doEdit(${todo.ProjectId},${todo.id}, event)" class="btn btn-info">Edit</button> |
+                    <button onclick="doDelete(${todo.ProjectId},${todo.id}, event)" class="btn btn-danger">Delete</button>
                 </div>
             </div>
             `)
         });
     })
     .fail ( err => {
+        console.log("Error:" , err.responseJSON.message)
+    })
+    .always ( () => {
+    })
+}
+
+
+function fetchDataProject() {
+    $('#cardProject').empty()
+    $.ajax({
+        method: "GET",
+        url : "http://localhost:3333/project/",
+        headers : {
+            access_token: localStorage.token
+        }
+    })
+    .done( projects => {
+        console.log(projects, "INI PROJECT")
+        projects.forEach(project => { 
+            console.log(project,"projectproject")
+            let deadline = new Date(project.Project.deadline)
+            let getDate = `${deadline.getFullYear()}-0${deadline.getMonth()+1}-0${deadline.getDate()}`
+            $('#cardProject').append(`
+            <div class="card" style="width: 18rem;margin: 1%" >
+                <div class="card-body">
+                    <h5 class="card-title">${project.Project.name}</h5>
+                    <p class="card-text">Deadline : ${getDate} </p>
+                    <button class="btn btn-info" onclick="detailsProject(${project.ProjectId},event)"> see details </button>
+                </div>
+            </div>
+            `)
+        });
+    })
+    .fail ( err => {
+        console.log("Error:" , err)
+    })
+    .always ( () => {
+    })
+}
+
+function detailsProject(projectId,event){
+    event.preventDefault()
+    $('#showDetailsProject').toggle()
+    $('#addToDoBtn').attr('onclick',`showAddToDo(${projectId},event)`)
+    console.log(projectId)
+    $.ajax({
+        method: "get",
+        url: `http://localhost:3333/project/${projectId}`,
+        headers : {
+            access_token: localStorage.token
+        }
+    })
+    .done( data => {
+        let deadline = new Date(data.deadline)
+        let getDate = `${deadline.getFullYear()}-0${deadline.getMonth()+1}-0${deadline.getDate()}`
+        
+        console.log(data,"datadatadata")
+        
+        $('#idProject').val(data.id)
+        $('#nameProject').text(data.name)
+        $('#deadlineProjectDetails').text(getDate)
+        $.ajax({
+            method: "get",
+            url: `http://localhost:3333/users`
+        })
+        .done( userList => {
+            $('#listUser').empty()
+            userList.forEach( user=> {
+                $('#listUser').append(`
+                    <option  href="#" value="${user.id}" >${user.email}</option>
+                    `)
+            })
+            $.ajax({
+                method: "get",
+                url: `http://localhost:3333/project/member/${projectId}`,
+                headers : {
+                    access_token: localStorage.token
+                }
+            })
+            .done( PUData => {
+                console.log(PUData,"PUData")
+                $('#projectMembers').empty()
+                PUData.forEach( data => {
+                    $('#projectMembers').append(`
+                    | ${data.User.email} |
+                `)
+                })
+
+                fetchDataTodos(projectId)
+            })
+            .fail ( err => {
+                $('#errorLogin').text(err.responseJSON.message).show()
+                console.log("Error:" , err.responseJSON.message)
+            })
+            .always ( () => {
+                $('#emailLogin').val('')
+                $('#passwordLogin').val('')
+            })
+        })
+        .fail ( err => {
+            $('#errorLogin').text(err.responseJSON.message).show()
+            console.log("Error:" , err.responseJSON.message)
+        })
+        .always ( () => {
+            $('#emailLogin').val('')
+            $('#passwordLogin').val('')
+        })
+    })
+    .fail ( err => {
+        $('#errorLogin').text(err.responseJSON.message).show()
+        console.log("Error:" , err.responseJSON.message)
+    })
+    .always ( () => {
+        $('#emailLogin').val('')
+        $('#passwordLogin').val('')
+    })
+}
+
+function showAddProjectForm(event){
+    event.preventDefault()
+    $('#addProjectForm').toggle()
+    
+}
+
+function addUserToProject (event){
+    event.preventDefault()
+    const idProject = $('#idProject').val()
+    const idUser = $('#listUser').val()
+    $.ajax({
+        method: "post",
+        url : `http://localhost:3333/project/invite/${idProject}/${idUser}`,
+        headers:{
+            access_token : localStorage.token
+        }
+    })
+    .done( data => {
+        console.log("masuk data", data)
+        $('#showDetailsProject').hide()
+        afterLogin()
+    })
+    .fail ( err => {
+        console.log("masuk err", err)
+        $('#errorLogin').text(err.responseJSON.message).show()
         console.log("Error:" , err.responseJSON.message)
     })
     .always ( () => {
@@ -123,17 +281,17 @@ function processRegister(event){
 }
 
 function showRegister () {
-    $('#registerCard').show()
+    $('#registerCard').toggle()
 }
 
-function doEdit(id, event){
+function doEdit(projectId,id, event){
     event.preventDefault()
     $('#addTodo').hide()
-    $('#editTodo').show()
+    $('#editTodo').toggle()
 
     $.ajax({
         method: "GET",
-        url: `http://localhost:3333/todos/${id}`,
+        url: `http://localhost:3333/todos/${projectId}/${id}`,
         headers: {
             access_token: localStorage.token
         }
@@ -147,6 +305,8 @@ function doEdit(id, event){
         $('#statusUpdate').val(data.status)
         $('#due_dateUpdate').val(getDate)
         $('#todoId').val(data.id)
+        $('#ProjectId').val(data.ProjectId)
+        
     })
     .fail( err => {
         console.log(err.responseJSON.message)
@@ -163,12 +323,13 @@ function doProcessEdit(event) {
     const description = $('#descriptionUpdate').val()
     const status = $('#statusUpdate').val()
     const due_date = $('#due_dateUpdate').val()
+    const ProjectId = $('#ProjectId').val()
 
     console.log(title, description, status, due_date)
 
     $.ajax({
         method: "PUT",
-        url: `http://localhost:3333/todos/${id}`,
+        url: `http://localhost:3333/todos/${ProjectId}/${id}`,
         data : {
             title : title,
             description : description,
@@ -190,15 +351,13 @@ function doProcessEdit(event) {
     })
     .always ( () => {
     })
-
-
 }
 
-function doDelete(id, event){
+function doDelete(ProjectId,id, event){
     event.preventDefault()
     $.ajax({
         method: "DELETE",
-        url: `http://localhost:3333/todos/${id}`,
+        url: `http://localhost:3333/todos/${ProjectId}/${id}`,
         headers: {
             access_token: localStorage.token
         }
@@ -216,6 +375,7 @@ function doDelete(id, event){
 function doAddToDo(event){
     event.preventDefault()
     $('#editTodo').hide()
+    const projectId = $('#projectId').val()
 
     const newTodo = {
         title: $('#title').val(),
@@ -226,12 +386,12 @@ function doAddToDo(event){
     console.log(newTodo)
     $.ajax({
         method: "POST",
-        url: "http://localhost:3333/todos/",
+        url: `http://localhost:3333/todos/${projectId}`,
         data: {
             title: newTodo.title,
             description: newTodo.description,
             status: newTodo.status,
-            due_date: newTodo.due_date
+            due_date: newTodo.due_date,
         },
         headers:{
             access_token : localStorage.token
@@ -239,10 +399,12 @@ function doAddToDo(event){
     })
     .done( data => {
         console.log("success add ", data)
+        $('#title').val('')
+        $('#description').val('')
         afterLogin()
     })
     .fail ( err => {
-        console.log("error", err.responseJSON)
+        console.log("error", err)
         $('#errorAddTodo').text(err.responseJSON.message).show()
 
     })
@@ -252,10 +414,47 @@ function doAddToDo(event){
 
 }
 
-function showAddToDo(event) {
+function doAddProject(event){
+    event.preventDefault()
+    // $('#addProject').hide()
+    const newProject = {
+        name: $('#projectName').val(),
+        deadline: $('#deadlineProject').val(),
+    }
+    console.log(newProject)
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:3333/project/",
+        data: {
+            name: newProject.name,
+            deadline: newProject.deadline,
+        },
+        headers:{
+            access_token : localStorage.token
+        }
+    })
+    .done( data => {
+        console.log("success add ", data)
+        $('#projectName').val('')
+        $('#deadlineProject').val('')
+        afterLogin()
+    })
+    .fail ( err => {
+        console.log("error", err.responseJSON)
+        $('#errorAddProject').text(err.responseJSON.message).show()
+        
+    })
+    .always ( () => {
+        console.log("ini always")
+    })
+
+}
+
+function showAddToDo(projectId,event) {
     event.preventDefault()
     $('#editTodo').hide()
-    $('#addTodo').show()
+    $('#projectId').val(projectId)
+    $('#addTodo').toggle()
 
 }
 

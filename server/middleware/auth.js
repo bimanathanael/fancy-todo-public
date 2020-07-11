@@ -1,5 +1,5 @@
 const { Jwtdecode } = require('../helper/jwt')
-const { Todo } = require('../models')
+const { Todo, Project, ProjectUser } = require('../models')
 
 
 const authentication = (req, res, next) => {
@@ -34,27 +34,31 @@ const authentication = (req, res, next) => {
 
 const authorization = (req, res, next) => {
     const todosId = req.params.id
-
+    const projectId = req.params.projectId
+    console.log("MASOEEEK")
     Todo.findByPk(todosId)
     .then( data => {
-        if(data){
-            if(data.UserId == req.userData.id) {
-                console.log(req.userData)
+        ProjectUser.findAll({ where : { ProjectId : projectId }})
+        .then( dataProjectUser => {
+            const users = []
+            dataProjectUser.forEach(item => {
+                users.push(item.dataValues.UserId)
+            });
+            if(users.indexOf(req.userData.id) >= 0){
+                console.log("SUKES SIH")
                 next();
             }else{
-                throw { 
+                throw{ 
                     name: "customErr",
-                    message: "Forbiden Access",
+                    message: "You not allowed to see",
                     status: 404
-                }
+                } 
             }
-        }else{
-            throw { 
-                name: "customErr",
-                message: "Data not Found",
-                status: 404
-            }
-        }
+        })
+        .catch( err => {
+            next(err)
+            // return res.status(500).json({ message: "Internal Server Error"})
+        })
     })
     .catch( err => {
         next(err)

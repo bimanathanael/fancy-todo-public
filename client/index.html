@@ -80,102 +80,170 @@
     <div class="container mb-4 row justify-content-md-center">
         <label class="badge badge-danger text-wrap" id="errorDelete"> error </label>
     </div>
-    <div class="container row m-5" id="cardTodos">
-        
-    </div>
+
     <div class="container mb-4 row justify-content-md-center">
-        <button type="button" class="btn btn-primary" id="addToDoBtn" onclick="showAddToDo(event)">Add to do</button>
+        <div class="col-5 offset-3">
+            <button type="button" class="btn btn-info" id="addProject" onclick="showAddProjectForm(event)"> + Add Project + </button>
+        </div>
     </div>
-    <div class="container col-md-5 offset-3 border mb-5" id="addTodo">
-        <h2> Add New Todo </h2>
-        <label class="badge badge-danger text-wrap" id="errorAddTodo"> error </label>
-        <form onsubmit="doAddToDo(event)">
+    <div class="container col-md-5 offset-3 border mb-5 mr-2" id="addProjectForm">
+        <div class="col-md-6 offset-4">
+            <h2>  Add Project  </h2>
+        </div>
+        <label class="badge badge-danger text-wrap" id="errorAddProject"> error </label>
+        <form onsubmit="doAddProject(event)">
             <div class="col-md-auto">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">title</span>
+                        <span class="input-group-text" id="basic-addon1">Name</span>
                     </div>
-                    <input id="title" type="text" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
+                    <input id="projectName" type="text" class="form-control" placeholder="project name"  aria-describedby="basic-addon1">
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">description</span>
+                        <span class="input-group-text" id="basic-addon1">Deadline</span>
                     </div>
-                    <input id="description" type="text" class="form-control" placeholder="description" aria-label="Password" aria-describedby="basic-addon1">
+                    <input id="deadlineProject" type="text" class="form-control" placeholder="yyyy-mm-dd"  >
                 </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Status</span>
-                    </div>
-                    <input id="status" type="text" class="form-control" placeholder="Status" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Due date</span>
-                    </div>
-                    <input id="due_date" type="text" class="form-control" placeholder="due date" aria-label="Password" aria-describedby="basic-addon1">
-                </div>
-                <div class="row justify-content-md-center">
-                    <button type="submit" class="btn btn-primary">add todo</button>
+                <div class="row justify-content-md-center mb-3">
+                    <button type="submit" class="btn btn-info">add project</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="container col-md-5 offset-3 border mb-5">
-        <div class="container " id="editTodo">
-            <h2> Update Todo </h2>
-            <label class="badge badge-danger text-wrap" id="errorAddTodoUpdate"> error </label>
-            <form onsubmit="doProcessEdit(event)">
-                <div class="col-md-auto">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">title</span>
-                        </div>
-                        <input id="titleUpdate" type="text" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
-                        <input id="todoId" type="hidden" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">description</span>
-                        </div>
-                        <input id="descriptionUpdate" type="text" class="form-control" placeholder="description" aria-label="Password" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Status</span>
-                        </div>
-                        <input id="statusUpdate" type="text" class="form-control" placeholder="Status" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Due date</span>
-                        </div>
-                        <input id="due_dateUpdate" type="text" class="form-control" placeholder="due date" aria-label="Password" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="row justify-content-md-center">
-                        <button type="submit" class="btn btn-primary">edit todo</button>
-                    </div>
-                </div>
-            </form>
+
+    <div id="activeProject">
+        <div class="col-md-4 offset-4 bg-warning pl-5">
+            <h2> Your Active Project </h2>
         </div>
-        <!-- Button to trigger modal -->
-<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
- 
-<!-- Modal -->
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Modal header</h3>
-  </div>
-  <div class="modal-body">
-    <p>One fine body…</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary">Save changes</button>
-  </div>
-</div>
+        <div class="container row m-5" id="cardProject">
+        </div>
+        
     </div>
+
+    <div class="card text-center" id="showDetailsProject">
+        <h4 class="text-info mt-1">Project Title:</h4> 
+        <div class="card-header"  id="nameProject">
+            
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="card-title">Users on this project :</h5>
+                    <p class="card-text" id="projectMembers"></p>
+                </div>
+                <div class="col-6">
+                    <form onsubmit="addUserToProject(event)" class="border-left">
+                        <h6> Invite someone here </h6>
+                        <input type="hidden" id="idProject">
+                        <div class="btn-group">
+                            <select class="btn btn-warning" id="listUser">
+                                <option selected disabled> -- select user -- </option>
+                            </select>
+                        </div>
+                        <button class="btn btn-info" type="submit" style="height: 39px;">Invite</a>
+                    </form>
+                </div>
+            </div>
+
+            <div class="container mt-5">
+                <h3 class="text-info"> Todo List </h3>
+                <div class="container row m-5" id="cardTodos">
+                
+                </div>
+            </div>
+
+            <div class="container mb-4 row justify-content-md-center">
+                <button type="button" class="btn btn-info" id="addToDoBtn" >Add to do</button>
+            </div>
+            <div class="container col-md-5 offset-3 border mb-5" id="addTodo">
+                <h2> Add New Todo </h2>
+                <label class="badge badge-danger text-wrap" id="errorAddTodo"> error </label>
+                <form onsubmit="doAddToDo(event)">
+                    <div class="col-md-auto">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">title</span>
+                            </div>
+                            <input id="projectId" type="hidden" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
+                            <input id="title" type="text" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">description</span>
+                            </div>
+                            <input id="description" type="text" class="form-control" placeholder="description" aria-label="Password" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Status</span>
+                            </div>
+                            <input id="status" type="text" class="form-control" placeholder="Status" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Due date</span>
+                            </div>
+                            <input id="due_date" type="text" class="form-control" placeholder="due date" aria-label="Password" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="row justify-content-md-center">
+                            <button type="submit" class="btn btn-primary">add todo</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="container col-md-5 offset-3 border mb-5">
+                <div class="container " id="editTodo">
+                    <h2> Update Todo </h2>
+                    <label class="badge badge-danger text-wrap" id="errorAddTodoUpdate"> error </label>
+                    <form onsubmit="doProcessEdit(event)">
+                        <div class="col-md-auto">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">title</span>
+                                </div>
+                                <input id="titleUpdate" type="text" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
+                                <input id="todoId" type="hidden" class="form-control" placeholder="title" aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">description</span>
+                                </div>
+                                <input id="descriptionUpdate" type="text" class="form-control" placeholder="description" aria-label="Password" aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Status</span>
+                                </div>
+                                <input id="statusUpdate" type="text" class="form-control" placeholder="Status" aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Due date</span>
+                                </div>
+                                <input id="due_dateUpdate" type="text" class="form-control" placeholder="due date" aria-label="Password" aria-describedby="basic-addon1">
+                                <input id="ProjectId" type="hidden" class="form-control" placeholder="due date" aria-label="Password" aria-describedby="basic-addon1">
+                            </div>
+                            <div class="row justify-content-md-center">
+                                <button type="submit" class="btn btn-primary">edit todo</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="card-footer text-muted">
+                Deadline :
+                <p  id="deadlineProjectDetails">
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="js/main.js"></script>
